@@ -1,0 +1,20 @@
+plugins {
+	id 'org.echocat.golang' version '0.1.16'
+}
+
+group 'github.com/foilen/mysql-manager'
+
+golang {
+  
+  dependencies {
+  	build "github.com/go-sql-driver/mysql"
+  }
+  
+	build {
+		outputFilenamePattern = 'build/out/mysql-manager'
+	}
+	
+}
+
+
+task wrapper(type: Wrapper) { gradleVersion = '4.3.1' }
