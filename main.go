@@ -143,27 +143,74 @@ func main() {
 
 		// Check all existing DB grants and update them
 		for _, databaseGrant := range userPermissions.DatabaseGrants {
-			row := db.QueryRow("SELECT select_priv, insert_priv, update_priv, delete_priv, create_priv, drop_priv, alter_priv FROM db WHERE user = ? AND host = ? AND db = ?", userPermissions.Name, userPermissions.Host, databaseGrant.DatabaseName)
-			var isSelect = "N"
-			var isInsert = "N"
-			var isUpdate = "N"
-			var isDelete = "N"
-			var isCreate = "N"
-			var isDrop = "N"
+			row := db.QueryRow(`SELECT 
+  			alter_priv,
+  			create_priv,
+    		create_routine_priv,
+    		create_tmp_table_priv,
+    		create_view_priv,
+  			delete_priv,
+  			drop_priv,
+    		event_priv,
+  			index_priv, 
+  			insert_priv,
+    		lock_tables_priv,
+  			select_priv,
+    		show_view_priv,
+    		trigger_priv,
+  			update_priv
+    		FROM db WHERE user = ? AND host = ? AND db = ?`, userPermissions.Name, userPermissions.Host, databaseGrant.DatabaseName)
 			var isAlter = "N"
-			err := row.Scan(&isSelect, &isInsert, &isUpdate, &isDelete, &isCreate, &isDrop, &isAlter)
+			var isCreate = "N"
+			var isCreateRoutine = "N"
+			var isCreateTempTable = "N"
+			var isCreateView = "N"
+			var isDelete = "N"
+			var isDrop = "N"
+			var isEvent = "N"
+			var isIndex = "N"
+			var isInsert = "N"
+			var isLockTables = "N"
+			var isSelect = "N"
+			var isShowView = "N"
+			var isTrigger = "N"
+			var isUpdate = "N"
+			err := row.Scan(
+			  &isAlter,
+			  &isCreate,
+			  &isCreateRoutine,
+			  &isCreateTempTable,
+			  &isCreateView,
+			  &isDelete,
+			  &isDrop,
+			  &isEvent,
+			  &isIndex,
+			  &isInsert,
+			  &isLockTables,
+			  &isSelect,
+			  &isShowView,
+			  &isTrigger,
+			  &isUpdate)
 			switch {
 			case err == sql.ErrNoRows:
 			case err != nil:
 				log.Fatal(err)
 			}
-			grantOrRevoke(db, fullUserName, databaseGrant, "SELECT", isSelect)
-			grantOrRevoke(db, fullUserName, databaseGrant, "INSERT", isInsert)
-			grantOrRevoke(db, fullUserName, databaseGrant, "UPDATE", isUpdate)
-			grantOrRevoke(db, fullUserName, databaseGrant, "DELETE", isDelete)
-			grantOrRevoke(db, fullUserName, databaseGrant, "CREATE", isCreate)
-			grantOrRevoke(db, fullUserName, databaseGrant, "DROP", isDrop)
 			grantOrRevoke(db, fullUserName, databaseGrant, "ALTER", isAlter)
+			grantOrRevoke(db, fullUserName, databaseGrant, "CREATE", isCreate)
+			grantOrRevoke(db, fullUserName, databaseGrant, "CREATE ROUTINE", isCreateRoutine)
+			grantOrRevoke(db, fullUserName, databaseGrant, "CREATE TEMPORARY TABLES", isCreateTempTable)
+			grantOrRevoke(db, fullUserName, databaseGrant, "CREATE VIEW", isCreateView)
+			grantOrRevoke(db, fullUserName, databaseGrant, "DELETE", isDelete)
+			grantOrRevoke(db, fullUserName, databaseGrant, "DROP", isDrop)
+			grantOrRevoke(db, fullUserName, databaseGrant, "INDEX", isIndex)
+			grantOrRevoke(db, fullUserName, databaseGrant, "EVENT", isEvent)
+			grantOrRevoke(db, fullUserName, databaseGrant, "INSERT", isInsert)
+			grantOrRevoke(db, fullUserName, databaseGrant, "LOCK TABLES", isLockTables)
+			grantOrRevoke(db, fullUserName, databaseGrant, "SELECT", isSelect)
+			grantOrRevoke(db, fullUserName, databaseGrant, "SHOW VIEW", isShowView)
+			grantOrRevoke(db, fullUserName, databaseGrant, "TRIGGER", isTrigger)
+			grantOrRevoke(db, fullUserName, databaseGrant, "UPDATE", isUpdate)
 
 		}
 	}
