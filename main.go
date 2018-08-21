@@ -59,7 +59,7 @@ func main() {
 	for _, database := range existingDatabases {
 		if !arrayContains(managerConfiguration.Databases, database) {
 			fmt.Println("Drop database", database)
-			sqlExecOrFail(db, "DROP DATABASE "+database)
+			sqlExecOrFail(db, "DROP DATABASE `"+database+"`")
 		}
 	}
 
@@ -67,7 +67,7 @@ func main() {
 	for _, database := range managerConfiguration.Databases {
 		if !arrayContains(existingDatabases, database) {
 			fmt.Println("Create database", database)
-			sqlExecOrFail(db, "CREATE DATABASE "+database)
+			sqlExecOrFail(db, "CREATE DATABASE `"+database+"`")
 		}
 	}
 
@@ -143,7 +143,7 @@ func main() {
 
 		// Check all existing DB grants and update them
 		for _, databaseGrant := range userPermissions.DatabaseGrants {
-			row := db.QueryRow(`SELECT 
+			row := db.QueryRow(`SELECT
   			alter_priv,
   			create_priv,
     		create_routine_priv,
@@ -152,7 +152,7 @@ func main() {
   			delete_priv,
   			drop_priv,
     		event_priv,
-  			index_priv, 
+  			index_priv,
   			insert_priv,
     		lock_tables_priv,
   			select_priv,
@@ -176,21 +176,21 @@ func main() {
 			var isTrigger = "N"
 			var isUpdate = "N"
 			err := row.Scan(
-			  &isAlter,
-			  &isCreate,
-			  &isCreateRoutine,
-			  &isCreateTempTable,
-			  &isCreateView,
-			  &isDelete,
-			  &isDrop,
-			  &isEvent,
-			  &isIndex,
-			  &isInsert,
-			  &isLockTables,
-			  &isSelect,
-			  &isShowView,
-			  &isTrigger,
-			  &isUpdate)
+				&isAlter,
+				&isCreate,
+				&isCreateRoutine,
+				&isCreateTempTable,
+				&isCreateView,
+				&isDelete,
+				&isDrop,
+				&isEvent,
+				&isIndex,
+				&isInsert,
+				&isLockTables,
+				&isSelect,
+				&isShowView,
+				&isTrigger,
+				&isUpdate)
 			switch {
 			case err == sql.ErrNoRows:
 			case err != nil:
