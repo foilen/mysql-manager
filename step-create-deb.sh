@@ -24,5 +24,5 @@ cp -rv DEBIAN $DEB_PATH/
 cp -rv build/gopath/build/out/mysql-manager $DEB_PATH/usr/local/bin/
 
 cd $DEB_PATH/..
-dpkg-deb --build mysql-manager
+dpkg-deb --no-uniform-compression --build mysql-manager
 mv mysql-manager.deb $DEB_FILE
