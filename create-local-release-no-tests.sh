@@ -16,4 +16,3 @@ cd $RUN_PATH
 ./step-clean.sh
 ./step-get-dependencies.sh
 ./step-compile.sh
-./step-test.sh

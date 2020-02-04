@@ -2,14 +2,17 @@
 
 set -e
 
+RUN_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $RUN_PATH
+
 # Check params
 if [ $# -ne 1 ]
 	then
 		echo Usage: $0 version;
     echo E.g: $0 0.1.0
 		echo Version is MAJOR.MINOR.BUGFIX
-		echo Latest versions:
-		git tag | tail -n 5
+		echo Latest version:
+		git describe --abbrev=0
 		exit 1;
 fi
 
@@ -17,15 +20,13 @@ fi
 export LANG="C.UTF-8"
 export VERSION=$1
 
-RUN_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-cd $RUN_PATH
-
-./step-clean-compile.sh
-./step-create-deb.sh
-./step-upload-bintray.sh
-
-echo ----[ Git Tag ]==----
-git tag -a -m $VERSION $VERSION
+./step-clean.sh
+./step-get-dependencies.sh
+./step-compile.sh
+./step-test.sh
+./step-debian-create.sh
+./step-debian-upload.sh
+./step-git-tag.sh
 
 echo ----[ Operation completed successfully ]==----
 

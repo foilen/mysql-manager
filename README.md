@@ -9,6 +9,19 @@ This is an application to update the databases and the users permissions by appl
 
 `./create-local-release.sh`
 
+## Create a mariadb database
+
+```
+INSTANCE=test-manager
+
+docker run \
+  --name $INSTANCE \
+  -e MYSQL_ROOT_PASSWORD=qwerty \
+  -e DBNAME=noname \
+  -p 3306:3306 \
+  -d mariadb:10.4.8
+```
+
 ## Configure
 
 ```
@@ -29,6 +42,10 @@ vi $TMPDIR/manager-config.json
 		{
 			"name" : "root",
 			"host" : "localhost"
+		},
+		{
+			"name" : "root",
+			"host" : "%"
 		},
 		{
 			"name" : "debian-sys-maint",
@@ -74,10 +91,10 @@ vi $TMPDIR/manager-config.json
 ## Execute
 
 To see the help:
-`./build/gopath/build/out/mysql-manager`
+`./build/bin/mysql-manager`
 
 To execute:
-`./build/gopath/build/out/mysql-manager 127.0.0.1:3306 $TMPDIR/manager-config.json`
+`./build/bin/mysql-manager 127.0.0.1:3306 $TMPDIR/manager-config.json`
 
 ## Important points
 
@@ -86,6 +103,12 @@ To execute:
 * Any user that is not specifically ignored or listed in `usersPermissions` will be dropped.
 * There is no check that the databases in `usersPermissions` are listed in `databases`.
 * There is no check that the `databaseGrants` for a user is not using multiple times the same database. The last one listed for a specific database is what the user will get.
+
+## Delete the mariadb database
+
+```
+docker rm -f $INSTANCE
+```
 
 # Create release
 
