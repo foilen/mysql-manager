@@ -9,6 +9,8 @@ This is an application to update the databases and the users permissions by appl
 
 `./create-local-release.sh`
 
+The file is then in `build/bin/mysql-manager`
+
 ## Create a mariadb database
 
 ```
@@ -114,11 +116,14 @@ docker rm -f $INSTANCE
 
 `./create-public-release.sh`
 
+That will show the latest created version. Then, you can choose one and execute:
+`./create-public-release.sh X.X.X`
+
 # Use with debian
 
+Get the version you want from https://deploy.foilen.com/mysql-manager/ .
+
 ```bash
-echo "deb https://dl.bintray.com/foilen/debian stable main" | sudo tee /etc/apt/sources.list.d/foilen.list
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 379CE192D401AB61
-sudo apt update
-sudo apt install mysql-manager
+wget https://deploy.foilen.com/mysql-manager/mysql-manager_X.X.X_amd64.deb
+sudo dpkg -i mysql-manager_X.X.X_amd64.deb
 ```
